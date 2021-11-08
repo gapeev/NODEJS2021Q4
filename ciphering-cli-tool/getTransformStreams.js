@@ -1,23 +1,18 @@
-const CaesarCipher = require('./CaesarCipher');
-const ROT8Cipher = require('./ROT8Cipher');
-const AtbashCipher = require('./AtbashCipher');
-const Xcryptor = require('./Xcryptor');
-const XcryptTransform = require('./XcryptTransform');
+const CaesarTransform = require('./CaesarTransform');
+const ROT8Transform = require('./ROT8Transform');
+const AtbashTransform = require('./AtbashTransform');
 
 module.exports = (config) => {
-  const ciphers = {
-    C: new CaesarCipher(),
-    R: new ROT8Cipher(),
-    A: new AtbashCipher(),
+  const transforms = {
+    C: CaesarTransform,
+    R: ROT8Transform,
+    A: AtbashTransform,
   };
 
   return config.map(
     ([cipher, type = '0']) =>
-      new XcryptTransform({
-        xcryptor: new Xcryptor(
-          ciphers[cipher],
-          type === '0' ? 'decrypt' : 'encrypt'
-        ),
+      new transforms[cipher]({
+        xcryptorType: type === '0' ? 'decrypt' : 'encrypt',
       })
   );
 };
